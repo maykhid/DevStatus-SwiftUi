@@ -12,6 +12,18 @@ struct ContentView: View {
     @State private var username: String = ""
     @State private var navigateToNextScreen = false
     
+    @ObservedObject var viewModel: DevStatusViewModel
+    
+    var myBoolBinding: Binding<Bool> {
+            Binding<Bool>(
+                get: { viewModel.user != nil },
+                set: { newValue in
+                    self.navigateToNextScreen = newValue
+                    
+                }
+            )
+        }
+    
     var body: some View {
         ZStack {
             Color(uiColor: backgroundColor).ignoresSafeArea()
@@ -38,11 +50,19 @@ struct ContentView: View {
                 Spacer()
                     .frame(height: 25.0)
                 
-                Button {
-                    navigateToNextScreen = true
-                } label: {
-                    Text("Check Status").font(.subheadline).fontWeight(.semibold).foregroundColor(Color(uiColor: backgroundColor))
-                }
+                Button (action: {
+                    Task {
+                        await viewModel.getGitHubUser(username: "maykhid")
+//                        print(viewModel.user!.name)
+                    }
+                }, label: {
+                    if(viewModel.loadingState == true) {
+                        ProgressView()
+                    } else {
+                        Text("Check Status").font(.subheadline).fontWeight(.semibold).foregroundColor(Color(uiColor: backgroundColor))
+                    }
+                    
+                })
                 .frame(height: 45.0)
                 .buttonStyle(.plain)
                 .frame(maxWidth: .infinity)
@@ -51,7 +71,7 @@ struct ContentView: View {
                 
             }
             .padding(.horizontal, 25.0)
-        }.navigate(to: DevInfo(), when: $navigateToNextScreen)
+        }.navigate(to: DevInfo(viewModel: viewModel), when: myBoolBinding)
         
         
     }
@@ -67,8 +87,8 @@ struct CustomTextFieldStyle: TextFieldStyle {
 }
 
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}

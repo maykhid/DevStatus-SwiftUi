@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct DevStatus_SwiftUiApp: App {
+    var viewModel = DevStatusViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: viewModel)
         }
     }
 }

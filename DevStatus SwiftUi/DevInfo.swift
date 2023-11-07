@@ -9,6 +9,34 @@ import SwiftUI
 
 struct DevInfo: View {
     let backgroundColor = UIColor(hex: "#395266")
+    
+    @ObservedObject var viewModel: DevStatusViewModel
+    
+    func formatDate(dateString: String) -> String {
+        let inputDateFormatter = DateFormatter()
+        inputDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+
+        if let date = inputDateFormatter.date(from: dateString) {
+            let outputDateFormatter = DateFormatter()
+            outputDateFormatter.dateFormat = "MMMM d, yyyy"
+            outputDateFormatter.locale = Locale(identifier: "en_US") // Set the locale for English
+            
+            return outputDateFormatter.string(from: date)
+        } else {
+            return "Invalid Date"
+        }
+    }
+    
+    func level(repoCount: Int) -> String {
+        if(repoCount < 20) {
+            return "Upcoming Open Source Engineer"
+        }
+        if(repoCount >= 21 && repoCount < 50 ) {
+            return "Junior Open Source Engineer"
+        }
+        return "Senior Open Source Engineer"
+    }
+
 
     
     var body: some View {
@@ -22,20 +50,20 @@ struct DevInfo: View {
                 Spacer()
                     .frame(height: 80.0)
                 
-                Text("Ifebunandu Henry").font(.system(size: 35)).fontWeight(.semibold).foregroundColor(Color.white)
+                Text(viewModel.user!.name).font(.system(size: 35)).fontWeight(.semibold).foregroundColor(Color.white)
                 
                 Spacer()
                     .frame(height: 15.0)
                 
-                Text("Software Developer (Flutter)").fontWeight(.thin).foregroundColor(Color.white)
+                Text(viewModel.user!.bio).fontWeight(.thin).foregroundColor(Color.white)
                 
                 Spacer()
                     .frame(height: 35.0)
                 
                 HStack{
-                    Text("11 Following").foregroundColor(Color.white)
+                    Text("\(String(viewModel.user!.following)) Following").foregroundColor(Color.white)
                     
-                    Text("1 Followers").foregroundColor(Color.white)
+                    Text("\(String(viewModel.user!.followers)) Followers").foregroundColor(Color.white)
                 }
                 
                 Spacer()
@@ -43,7 +71,7 @@ struct DevInfo: View {
                 
                 HStack{
                     VStack {
-                        Text("About Maykhid").font(.system(size: 21)).fontWeight(.semibold).foregroundColor(Color.white)
+                        Text("About \(String(viewModel.user!.login))").font(.system(size: 21)).fontWeight(.semibold).foregroundColor(Color.white)
                         
                         Rectangle()
                             .frame(width: 150.0, height: 2.0).foregroundColor(Color.white)
@@ -62,15 +90,15 @@ struct DevInfo: View {
                 HStack{
                     
                     VStack(alignment: .leading, spacing: 35.0){
-                        DevStat(stat: "Repositories:", statInfo: "25")
+                        DevStat(stat: "Repositories:", statInfo: "\(String(viewModel.user!.public_repos))")
                         
-                        DevStat(stat: "Location:", statInfo: "Lagos, Nigeria")
+                        DevStat(stat: "Location:", statInfo: "\(String(viewModel.user!.location))")
                         
-                        DevStat(stat: "Website:", statInfo: "Not Provided")
+                        DevStat(stat: "Website:", statInfo: "\(viewModel.user!.blog.isEmpty ? "Not Provided" : String(viewModel.user!.blog))")
                         
-                        DevStat(stat: "Status:", statInfo: "Junior Open Source Engineer")
+                        DevStat(stat: "Status:", statInfo: level(repoCount: viewModel.user!.public_repos))
                         
-                        DevStat(stat: "Joined:", statInfo: "September 3, 2019")
+                        DevStat(stat: "Joined:", statInfo: formatDate(dateString: viewModel.user!.created_at))
                         
                         Spacer()
                     }
@@ -103,16 +131,16 @@ struct DevStat: View {
     }
 }
 
-struct DevInfo_Previews: PreviewProvider {
-    static var previews: some View {
-        
-        Group{
-            DevInfo()
-            
-            DevInfo().previewDevice(PreviewDevice(rawValue: "iPhone 12"))
-        }
-       
-    }
-}
+//struct DevInfo_Previews: PreviewProvider {
+//    static var previews: some View {
+//
+//        Group{
+//            DevInfo()
+//
+//            DevInfo().previewDevice(PreviewDevice(rawValue: "iPhone 12"))
+//        }
+//
+//    }
+//}
 
 
