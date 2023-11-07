@@ -24,18 +24,5 @@ class DevStatusViewModel : ObservableObject {
         } else {
                         errorMessage = response.errorMessage!
         }
-        
-//        do {
-//            let response = try await DevStatusRepository().getGitHubUser(username: username)
-//            loadingState = false
-//            
-//            if(response.isSuccess) {
-//                user = response.data
-//            } else {
-//                errorMessage = response.errorMessage!
-//            }
-//        } catch {
-//            return
-//        }
     }
 }
