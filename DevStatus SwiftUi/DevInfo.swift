@@ -114,6 +114,8 @@ struct DevInfo: View {
             }
             .padding(.horizontal, 22.0)
            
+        }.onDisappear{
+            viewModel.clearState()
         }
     }
 }

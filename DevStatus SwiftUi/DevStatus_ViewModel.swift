@@ -11,6 +11,14 @@ class DevStatusViewModel : ObservableObject {
     @Published var loadingState: Bool = false
     @Published var errorMessage: String?
     
+    func clearState() {
+        user = nil
+        loadingState = false
+        errorMessage = nil
+
+        objectWillChange.send()
+    }
+    
     func getGitHubUser(username: String) async -> Void {
         
         loadingState = true
@@ -22,7 +30,7 @@ class DevStatusViewModel : ObservableObject {
         if (response.isSuccess) {
             user = response.data
         } else {
-                        errorMessage = response.errorMessage!
+            errorMessage = response.errorMessage!
         }
     }
 }

@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var username: String = ""
     @State private var navigateToNextScreen = false
     
-    @ObservedObject var viewModel: DevStatusViewModel
+    @StateObject var viewModel = DevStatusViewModel()
     
     var myBoolBinding: Binding<Bool> {
             Binding<Bool>(
@@ -52,8 +52,7 @@ struct ContentView: View {
                 
                 Button (action: {
                     Task {
-                        await viewModel.getGitHubUser(username: "maykhid")
-//                        print(viewModel.user!.name)
+                        await viewModel.getGitHubUser(username: username)
                     }
                 }, label: {
                     if(viewModel.loadingState == true) {
