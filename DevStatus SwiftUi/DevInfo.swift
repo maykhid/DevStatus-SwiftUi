@@ -12,32 +12,6 @@ struct DevInfo: View {
     
     @ObservedObject var viewModel: DevStatusViewModel
     
-    func formatDate(dateString: String) -> String {
-        let inputDateFormatter = DateFormatter()
-        inputDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-
-        if let date = inputDateFormatter.date(from: dateString) {
-            let outputDateFormatter = DateFormatter()
-            outputDateFormatter.dateFormat = "MMMM d, yyyy"
-            outputDateFormatter.locale = Locale(identifier: "en_US") // Set the locale for English
-            
-            return outputDateFormatter.string(from: date)
-        } else {
-            return "Invalid Date"
-        }
-    }
-    
-    func level(repoCount: Int) -> String {
-        if(repoCount < 20) {
-            return "Upcoming Open Source Engineer"
-        }
-        if(repoCount >= 21 && repoCount < 50 ) {
-            return "Junior Open Source Engineer"
-        }
-        return "Senior Open Source Engineer"
-    }
-
-
     
     var body: some View {
         ZStack{
@@ -96,7 +70,7 @@ struct DevInfo: View {
                         
                         DevStat(stat: "Website:", statInfo: "\(viewModel.user!.blog.isEmpty ? "Not Provided" : String(viewModel.user!.blog))")
                         
-                        DevStat(stat: "Status:", statInfo: level(repoCount: viewModel.user!.public_repos))
+                        DevStat(stat: "Status:", statInfo: seniorityLevel(repoCount: viewModel.user!.public_repos))
                         
                         DevStat(stat: "Joined:", statInfo: formatDate(dateString: viewModel.user!.created_at))
                         

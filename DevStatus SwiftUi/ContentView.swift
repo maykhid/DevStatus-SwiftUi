@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AlertToast
 
 struct ContentView: View {
     let backgroundColor = UIColor(hex: "#395266")
@@ -13,6 +14,8 @@ struct ContentView: View {
     @State private var navigateToNextScreen = false
     
     @StateObject var viewModel = DevStatusViewModel()
+    
+    @State private var hasError: Bool = false
     
     var myBoolBinding: Binding<Bool> {
             Binding<Bool>(
@@ -53,6 +56,9 @@ struct ContentView: View {
                 Button (action: {
                     Task {
                         await viewModel.getGitHubUser(username: username)
+                        if(viewModel.errorMessage != nil) {
+                            hasError = true
+                        }
                     }
                 }, label: {
                     if(viewModel.loadingState == true) {
@@ -66,13 +72,12 @@ struct ContentView: View {
                 .buttonStyle(.plain)
                 .frame(maxWidth: .infinity)
                 .background(Color.white)
-                
-                
-            }
-            .padding(.horizontal, 25.0)
-        }.navigate(to: DevInfo(viewModel: viewModel), when: myBoolBinding)
-        
-        
+            }.padding(.horizontal, 25.0)
+            
+        }.toast(isPresenting: $hasError) {
+            AlertToast(type: .error(Color.red), title: viewModel.errorMessage)
+        }
+        .navigate(to: DevInfo(viewModel: viewModel), when: myBoolBinding)
     }
         
 }

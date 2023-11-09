@@ -14,8 +14,13 @@ class DevStatusRepository {
            let result = try await DevStatus_DataSource().getGitHubUser(username: username)
             return Result.success(result)
         } catch  {
-            let errorMessage = error.localizedDescription
-            print("Error: \(error)")
+            var errorMessage : String
+            if "\(error)" == "notFound" {
+                errorMessage = "User Not Found!"
+            } else {
+                errorMessage = "\(error)"
+            }
+           
             return Result.failure(errorMessage, nil)
         }
     }

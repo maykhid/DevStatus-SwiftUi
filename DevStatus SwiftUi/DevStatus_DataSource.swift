@@ -12,7 +12,7 @@ class DevStatus_DataSource {
     func getGitHubUser(username: String) async throws -> UserResponse {
    
         
-        var gitHubUrl = URL(string: "https://api.github.com/users/" + username)
+        let gitHubUrl = URL(string: "https://api.github.com/users/" + username)
         
         let request = URLRequest(url: gitHubUrl!)
         
